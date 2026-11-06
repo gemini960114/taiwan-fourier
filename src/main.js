@@ -15,6 +15,8 @@ const renderer=createRenderer(document.querySelector('canvas'));
 function rebuild(){drawing=reconstruct(model,player.count);el('error').textContent=drawing.error.toFixed(3)+'%';}
 function updateUI(){
  el('count').value=player.count;el('n').value=player.count;el('stageCount').textContent=player.count;
+ el('formulaCount').textContent=player.count;el('formulaSetCount').textContent=player.count;
+ document.querySelector('.equation').setAttribute('aria-label',`z ${player.count} of t equals c zero plus the sum over n in S ${player.count} of c n times e to the power i two pi n t`);
  el('play').textContent=player.playing?'暫停':'播放';el('play').setAttribute('aria-pressed',String(!player.playing));
  el('auto').textContent=player.touring?'■ 結束自動示範':'▶ 自動示範';
  el('regionTitle').textContent=region.name;
