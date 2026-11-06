@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-Hant">
+<html lang="zh-Hant" data-theme="warm">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -21,6 +21,14 @@
   <section class="readout" aria-label="重建誤差">
     <span id="regionTitle">台灣本島</span><span>RMS 誤差 <strong id="error">—</strong></span>
   </section>
+  <section class="formula-card" aria-label="傅立葉級數 / Fourier series">
+    <div class="formula-label">傅立葉級數 <span lang="en">Fourier series</span></div>
+    <div class="equation" role="math" aria-label="z N of t equals c zero plus the sum over n in S N of c n times e to the power i two pi n t">
+      <span><i>z</i><sub>N</sub>(<i>t</i>) = <i>c</i><sub>0</sub> +</span>
+      <span class="sum"><span>∑</span><small><i>n</i> ∈ <i>S</i><sub>N</sub></small></span>
+      <span><i>c</i><sub>n</sub><i>e</i><sup><i>i</i>2π<i>nt</i></sup></span>
+    </div>
+  </section>
   <p id="status" role="status">手動模式 · 64 個圓</p>
   <progress id="tourProgress" max="10" value="0" aria-label="自動示範進度"></progress>
   <nav aria-label="播放控制" class="playback">
@@ -31,9 +39,9 @@
   </nav>
   <details class="about">
     <summary>原理與圖資 <span lang="en">How it works &amp; map data</span></summary>
-    <div class="formula">z(t) = ∑ cₙ eⁱⁿᵗ</div>
     <p>每個 cₙ 決定一個旋轉向量的半徑與初始角度，n 決定旋轉頻率。向量相加後，末端就會描出輪廓；保留越多項，越能呈現細節。</p>
     <p lang="en">Each coefficient cₙ sets a rotating vector’s radius and starting angle; n sets its frequency. Adding these vectors traces the outline. More terms capture finer detail.</p>
+    <p>S<sub>N</sub>是目前選取的 N 個非零頻率，按振幅由大到小保留；c₀ 為中心偏移，t 從 0 到 1 畫完一圈。</p>
     <p id="regionNote"></p>
     <footer>本島輪廓 · <a href="https://www.naturalearthdata.com/">Natural Earth</a> 1:10m 概化海岸線<br>縣市界線 · <a href="https://data.gov.tw/dataset/7442">內政部國土測繪中心</a> COUNTY_MOI_1090820（2020-08-20），政府資料開放授權條款第 1 版；經簡化為動畫外輪廓。<br>誤差為重建點相對原取樣點的均方根距離 ÷ 所選輪廓南北高度，非測繪精度。</footer>
   </details>
@@ -45,7 +53,7 @@
   <input id="count" type="range" min="1" max="512" value="64">
   <div class="steps" id="steps" aria-label="快速選擇圓的數量"></div>
   <div class="setting-row"><label><input id="circles" type="checkbox" checked>顯示旋轉圓 <span lang="en">Show circles</span></label></div>
-  <div class="setting-row"><span>背景音樂 <span lang="en">Music</span></span><button id="music" aria-pressed="true">♫ 音樂：開</button></div>
+  <div class="setting-row"><label for="theme">配色 <span lang="en">Theme</span></label><select id="theme"><option value="warm">暖色便利貼</option><option value="dark">深色夜間</option></select></div>
   <div class="dialog-actions"><button id="restart">重新描繪</button><button id="settingsDone">完成 / Done</button></div>
 </dialog>
 <script type="module" src="/src/main.js"></script>

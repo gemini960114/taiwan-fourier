@@ -1,6 +1,6 @@
 # 傅立葉畫台灣 · Fourier Draws Taiwan
 
-Vite + 原生 JavaScript 的傅立葉繪圖動畫。支援台灣本島與 22 縣市、1–512 個旋轉圓、跳躍式自動示範及背景音樂。
+Vite + 原生 JavaScript 的傅立葉繪圖動畫。支援台灣本島與 22 縣市、1–512 個旋轉圓、跳躍式自動示範與暖色／深色配色。
 
 [線上體驗](https://gemini960114.github.io/taiwan-fourier/) · [GitHub](https://github.com/gemini960114/taiwan-fourier)
 
@@ -15,7 +15,7 @@ npm install
 npm run dev
 ```
 
-開啟終端機顯示的網址（通常為 `http://localhost:5173`）。遠端環境請透過平台提供的埠轉送／預覽網址開啟 5173 埠。以自己瀏覽器開啟網址才可在本機播放聲音；純畫面串流未必傳送音訊。
+開啟終端機顯示的網址（通常為 `http://localhost:5173`）。遠端環境請透過平台提供的埠轉送／預覽網址開啟 5173 埠。
 
 ```bash
 npm test
@@ -27,11 +27,10 @@ npm run preview
 
 ## 使用
 
-主畫面保留精簡播放列；點「設定」開啟圓數、顯示圓與音樂開關。設定立即生效，可按完成、Esc 或點視窗外關閉。公式與資料來源收在「原理與圖資」展開區。
+主畫面保留精簡播放列；點「設定」開啟圓數、顯示圓與配色切換。設定立即生效，可按完成、Esc 或點視窗外關閉。傅立葉公式常駐主畫面，詳細原理與資料來源收在「原理與圖資」展開區。預設暖米白便利貼配色，可切換深色並記住選擇。
 
 - 自動示範：1 → 2 → 4 → 8 → 16 → 32 → 64 → 128 → 256 → 512，每階段一圈，最後停留。
 - 選單可切換台灣本島／22 縣市。自動示範中切換會從 1 圓重播；手動模式保留圓數與暫停狀態。
-- 配樂「海岸漫步」是程式產生的原創循環曲，包含鋼琴音色、和弦、貝斯和鼓點；固定音量 75%。點自動示範或播放以允許瀏覽器播放聲音，可用音樂開關靜音。
 - 預設速度 2×，可選 0.5×、1×、2×、4×、8×、16×。
 
 ## 結構
@@ -39,7 +38,6 @@ npm run preview
 - `src/fourier.js`：等弧長取樣、傅立葉分析及重建誤差。
 - `src/player.js`：手動／自動播放狀態。
 - `src/renderer.js`：Canvas 繪圖、縮放與清晰配色。
-- `src/music.js`：背景配樂與音樂開關。
 - `src/main.js`：介面事件與縣市切換。
 - `src/data/`：可隨網站部署的本島與縣市資料。
 
@@ -53,9 +51,4 @@ npm run preview
 
 ## 重建素材（一般使用不需要）
 
-`scripts/prepare_counties.py` 需要 pyshp 與 shapely，讀取 `/tmp/taiwan-counties/` 中的官方 SHP。`scripts/generate_music.py` 需要 numpy，產生 WAV，再以 ffmpeg 編碼：
-
-```bash
-python3 scripts/generate_music.py
-ffmpeg -i src/assets/coastline-walk.wav -codec:a libmp3lame -b:a 128k src/assets/coastline-walk.mp3
-```
+縣市素材重建：`scripts/prepare_counties.py` 需要 pyshp 與 shapely，讀取 `/tmp/taiwan-counties/` 中的官方 SHP。

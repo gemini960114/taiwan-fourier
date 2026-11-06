@@ -4,7 +4,6 @@ import countiesUrl from './data/counties.json?url';
 import {analyzeOutline,reconstruct} from './fourier.js';
 import {Player,stages} from './player.js';
 import {createRenderer} from './renderer.js';
-import {MusicPlayer} from './music.js';
 
 const el=id=>document.getElementById(id);
 const player=new Player(matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -13,11 +12,6 @@ const models=new Map();
 let region=regions.get('taiwan'),model=analyzeOutline(coastline),drawing=reconstruct(model,player.count);
 models.set(region.id,model);
 const renderer=createRenderer(document.querySelector('canvas'));
-const music=new MusicPlayer(updateMusicUI);
-function updateMusicUI(){
- el('music').textContent=music.enabled?'♫ 音樂：開':'♫ 音樂：關';el('music').setAttribute('aria-pressed',String(music.enabled));el('music').title=music.error;
-}
-function syncMusic(unlock=false){void music.sync(player.playing,document.hidden,unlock);}
 function rebuild(){drawing=reconstruct(model,player.count);el('error').textContent=drawing.error.toFixed(3)+'%';}
 function updateUI(){
  el('count').value=player.count;el('n').value=player.count;el('stageCount').textContent=player.count;
@@ -31,13 +25,21 @@ function updateUI(){
  el('tourProgress').value=player.completed?10:player.touring?player.stageIndex+Math.min(player.progress,1):0;
 }
 function selectCount(n){player.manual(n);rebuild();updateUI();}
-for(const n of stages){const button=document.createElement('button');button.textContent=n;button.dataset.count=n;button.onclick=()=>{selectCount(n);syncMusic(true)};el('steps').append(button);}
+for(const n of stages){const button=document.createElement('button');button.textContent=n;button.dataset.count=n;button.onclick=()=>{selectCount(n);};el('steps').append(button);}
 el('count').addEventListener('input',()=>selectCount(+el('count').value));
 el('speed').onchange=()=>{player.speed=+el('speed').value;};
-el('auto').onclick=()=>{if(player.touring)player.stopTour();else player.startTour();rebuild();updateUI();syncMusic(true);};
-el('play').onclick=()=>{player.toggle();updateMusicUI();updateUI();syncMusic(true);};
-el('restart').onclick=()=>{player.restart();updateUI();syncMusic(true);el('settings').close();};
-el('music').onclick=()=>{music.enabled=!music.enabled;updateMusicUI();syncMusic(true);};
+el('auto').onclick=()=>{if(player.touring)player.stopTour();else player.startTour();rebuild();updateUI();};
+el('play').onclick=()=>{player.toggle();updateUI();};
+el('restart').onclick=()=>{player.restart();updateUI();el('settings').close();};
+function setTheme(value){
+ const theme=value==='dark'?'dark':'warm';
+ document.documentElement.dataset.theme=theme;
+ el('theme').value=theme;renderer.setTheme(theme);
+ try{localStorage.setItem('taiwan-fourier-theme',theme);}catch{}
+}
+let savedTheme='warm';try{savedTheme=localStorage.getItem('taiwan-fourier-theme')||'warm';}catch{}
+setTheme(savedTheme);
+el('theme').onchange=()=>setTheme(el('theme').value);
 const settings=el('settings');
 el('settingsOpen').onclick=()=>settings.showModal();
 el('settingsClose').onclick=()=>settings.close();
@@ -46,20 +48,20 @@ settings.addEventListener('click',event=>{if(event.target===settings){const rect
 el('region').onchange=()=>{
  region=regions.get(el('region').value)||regions.get('taiwan');
  if(!models.has(region.id))models.set(region.id,analyzeOutline(region.points));
- model=models.get(region.id);player.changeRegion();rebuild();updateUI();syncMusic();
+ model=models.get(region.id);player.changeRegion();rebuild();updateUI();
 };
 // Keep the main-island initial load small; county boundaries load independently.
 fetch(countiesUrl).then(response=>{if(!response.ok)throw Error('County data unavailable');return response.json();}).then(counties=>{
  counties.sort((a,b)=>a.name.localeCompare(b.name,'zh-Hant')).forEach(r=>{regions.set(r.id,r);const option=document.createElement('option');option.value=r.id;option.textContent=r.name;el('region').append(option);});
 }).catch(()=>{el('regionNote').textContent='縣市資料載入失敗，請重新整理。台灣本島仍可使用。';});
 let last=0,raf;
-document.addEventListener('visibilitychange',()=>{last=0;syncMusic();});
+document.addEventListener('visibilitychange',()=>{last=0;});
 function frame(now){
  const dt=last?Math.min((now-last)/1000,.1):0;last=now;
- if(!document.hidden){const previous=player.count,wasPlaying=player.playing;player.advance(dt);if(previous!==player.count){rebuild();updateUI();}if(wasPlaying!==player.playing){updateUI();syncMusic();}
+ if(!document.hidden){const previous=player.count,wasPlaying=player.playing;player.advance(dt);if(previous!==player.count){rebuild();updateUI();}if(wasPlaying!==player.playing){updateUI();}
  el('tourProgress').value=player.completed?10:player.touring?player.stageIndex+Math.min(player.progress,1):0;
  renderer.draw(model,drawing,player.progress,el('circles').checked);}
  raf=requestAnimationFrame(frame);
 }
-rebuild();updateUI();updateMusicUI();raf=requestAnimationFrame(frame);
-if(import.meta.hot)import.meta.hot.dispose(()=>{cancelAnimationFrame(raf);renderer.destroy();music.destroy();});
+rebuild();updateUI();raf=requestAnimationFrame(frame);
+if(import.meta.hot)import.meta.hot.dispose(()=>{cancelAnimationFrame(raf);renderer.destroy();});
