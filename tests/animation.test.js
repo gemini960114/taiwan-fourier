@@ -5,13 +5,13 @@ import {Player,stages} from '../src/player.js';
 import {analyzeOutline,reconstruct} from '../src/fourier.js';
 const load=name=>JSON.parse(readFileSync(new URL('../src/data/'+name,import.meta.url),'utf8'));
 test('jump demonstration completes all 10 stages and holds final outline',()=>{
- const p=new Player();assert.equal(p.speed,2);assert.equal(p.count,1);p.startTour();
+ const p=new Player();assert.equal(p.speed,4);assert.equal(p.count,1);assert.equal(p.touring,true);assert.equal(p.playing,true);
  for(const n of stages){assert.equal(p.count,n);p.advance(7*1.14/p.speed);}
  assert.equal(p.completed,true);assert.equal(p.progress,1);assert.equal(p.playing,false);p.advance(100);assert.equal(p.progress,1);
  p.startTour();assert.equal(p.count,1);assert.equal(p.progress,0);assert.equal(p.playing,true);
 });
 test('pause, speed, manual, region change, restart and reduced motion',()=>{
- const p=new Player();p.startTour();p.advance(1);p.toggle();const pause=p.progress;p.advance(100);assert.equal(p.progress,pause);p.toggle();p.speed=4;p.advance(2);assert.equal(p.count,2);
+ const p=new Player();p.startTour();p.advance(.1);p.toggle();const pause=p.progress;p.advance(100);assert.equal(p.progress,pause);p.toggle();p.speed=4;p.advance(2);assert.equal(p.count,2);
  p.changeRegion();assert.equal(p.count,1);assert.equal(p.touring,true);
  p.manual(11);assert.equal(p.touring,false);assert.equal(p.count,11);p.stopTour();p.toggle();p.changeRegion();assert.equal(p.progress,1);assert.equal(p.playing,false);p.restart();assert.equal(p.progress,0);assert.equal(p.playing,true);
  const reduced=new Player(true);assert.equal(reduced.progress,1);assert.equal(reduced.playing,false);

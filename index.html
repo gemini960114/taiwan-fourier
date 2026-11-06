@@ -13,7 +13,7 @@
     <div class="region-picker">
       <label for="region">輪廓 <span class="en-label" lang="en">Outline</span></label>
       <select id="region"><option value="taiwan">台灣本島</option></select>
-      <label class="count-picker">N = <select id="count" aria-label="圓數 N"><option value="1">1</option><option value="2">2</option><option value="4">4</option><option value="8">8</option><option value="16">16</option><option value="32">32</option><option value="64">64</option><option value="128">128</option><option value="256">256</option><option value="512">512</option><option value="custom">自訂…</option></select></label>
+      <label class="count-picker">N = <select id="count" aria-label="圓數 N"><option value="1">1</option><option value="2">2</option><option value="4" selected>4</option><option value="8">8</option><option value="16">16</option><option value="32">32</option><option value="64">64</option><option value="128">128</option><option value="256">256</option><option value="512">512</option><option value="custom">自訂…</option></select></label>
       <label id="customCountLabel" hidden>自訂 N <input id="customCount" type="number" min="1" max="512" step="1" value="1" aria-label="自訂圓數 1 至 512"></label>
     </div>
   </header>
@@ -34,7 +34,7 @@
   <nav aria-label="播放控制" class="playback">
     <button id="auto">▶ 自動示範</button>
     <button id="play" aria-pressed="false">暫停</button>
-    <label class="speed-control"><span>速度</span><select id="speed"><option value="0.5">0.5×</option><option value="1">1×</option><option value="2" selected>2×</option><option value="4">4×</option><option value="8">8×</option><option value="16">16×</option></select></label>
+    <label class="speed-control"><span>速度</span><select id="speed"><option value="0.5">0.5×</option><option value="1">1×</option><option value="2">2×</option><option value="4" selected>4×</option><option value="8">8×</option><option value="16">16×</option></select></label>
     <button id="settingsOpen" aria-haspopup="dialog">⚙ 設定</button>
   </nav>
   <details class="about">
