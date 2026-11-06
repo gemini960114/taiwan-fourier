@@ -14,7 +14,8 @@ models.set(region.id,model);
 const renderer=createRenderer(document.querySelector('canvas'));
 function rebuild(){drawing=reconstruct(model,player.count);el('error').textContent=drawing.error.toFixed(3)+'%';}
 function updateUI(){
- el('count').value=player.count;el('n').value=player.count;el('stageCount').textContent=player.count;
+ const custom=!stages.includes(player.count);
+ el('count').value=custom?'custom':String(player.count);el('customCountLabel').hidden=!custom;el('customCount').value=player.count;
  el('formulaCount').textContent=player.count;el('formulaSetCount').textContent=player.count;
  document.querySelector('.equation').setAttribute('aria-label',`z ${player.count} of t equals c zero plus the sum over n in S ${player.count} of c n times e to the power i two pi n t`);
  el('play').textContent=player.playing?'暫停':'播放';el('play').setAttribute('aria-pressed',String(!player.playing));
@@ -23,12 +24,14 @@ function updateUI(){
  el('regionNote').textContent=region.id==='taiwan'?'台灣本島海岸線，不含離島。':`${region.name}：${region.parts>1?'描繪最大連續陸塊的外輪廓，不包含其他離島或分離區塊。':'描繪行政區外輪廓。'}${region.holes?'內部孔洞（如其他縣市）不在本次描線範圍。':''} 圖資版本：2020-08-20。`;
  document.querySelector('canvas').setAttribute('aria-label',`旋轉圓描繪${region.name}外輪廓的動畫`);
  el('status').textContent=player.completed?'示範完成 · 512 個圓，已達本頁最高精細度':player.touring?`自動示範 ${player.stageIndex+1} / ${stages.length} · ${player.count} 個圓${player.playing?'':' · 已暫停'}`:`手動模式 · ${player.count} 個圓${player.playing?'':' · 已暫停'}`;
- document.querySelectorAll('#steps button').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.count===player.count)));
  el('tourProgress').value=player.completed?10:player.touring?player.stageIndex+Math.min(player.progress,1):0;
 }
 function selectCount(n){player.manual(n);if(!player.playing)player.progress=1;rebuild();updateUI();}
-for(const n of stages){const button=document.createElement('button');button.textContent=n;button.dataset.count=n;button.onclick=()=>{selectCount(n);};el('steps').append(button);}
-el('count').addEventListener('input',()=>selectCount(+el('count').value));
+el('count').onchange=()=>{
+ if(el('count').value==='custom'){el('customCountLabel').hidden=false;el('customCount').value=player.count;el('customCount').focus();el('customCount').select();}
+ else selectCount(+el('count').value);
+};
+el('customCount').onchange=()=>{const input=el('customCount');if(input.value!==''&&input.checkValidity())selectCount(+input.value);else{input.reportValidity();input.value=player.count;}};
 el('speed').onchange=()=>{player.speed=+el('speed').value;};
 el('auto').onclick=()=>{if(player.touring)player.stopTour();else player.startTour();rebuild();updateUI();};
 el('play').onclick=()=>{player.toggle();updateUI();};
