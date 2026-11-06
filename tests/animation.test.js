@@ -5,8 +5,8 @@ import {Player,stages} from '../src/player.js';
 import {analyzeOutline,reconstruct} from '../src/fourier.js';
 const load=name=>JSON.parse(readFileSync(new URL('../src/data/'+name,import.meta.url),'utf8'));
 test('jump demonstration completes all 10 stages and holds final outline',()=>{
- const p=new Player();p.startTour();
- for(const n of stages){assert.equal(p.count,n);p.advance(7*1.14);}
+ const p=new Player();assert.equal(p.speed,2);p.startTour();
+ for(const n of stages){assert.equal(p.count,n);p.advance(7*1.14/p.speed);}
  assert.equal(p.completed,true);assert.equal(p.progress,1);assert.equal(p.playing,false);p.advance(100);assert.equal(p.progress,1);
  p.startTour();assert.equal(p.count,1);assert.equal(p.progress,0);assert.equal(p.playing,true);
 });

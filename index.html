@@ -1,3 +1,53 @@
 <!doctype html>
-<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="用旋轉圓描繪台灣與22縣市輪廓，探索傅立葉級數。"><title>用圓畫出台灣 · Fourier Taiwan</title></head><body><main><header><small>FOURIER STUDY / 01</small><h1>旋轉的圓，能畫出<span id="regionTitle">台灣本島</span>嗎？</h1><p>每個圓是一個頻率；所有旋轉向量相加，就是地圖輪廓。</p><div class="region-picker"><label>選擇輪廓 <select id="region"><option value="taiwan">台灣本島</option></select></label></div><p id="regionNote"></p><div class="stage">N = <span id="stageCount">64</span></div></header><canvas aria-label="旋轉圓描繪台灣本島海岸線的動畫" role="img"></canvas><section><div class="error">輪廓 RMS 誤差 <strong id="error">—</strong></div><div class="formula">z(t) = ∑ cₙ eⁱⁿᵗ</div></section><p id="status" role="status">手動模式 · 或按「自動示範」逐步觀看</p><div class="steps" id="steps" aria-label="快速選擇圓的數量"></div><section><progress id="tourProgress" max="10" value="0" aria-label="自動示範進度"></progress></section><nav><button id="auto">▶ 自動示範</button><button id="play" aria-pressed="false">暫停</button><button id="restart">重新描繪</button><label>圓的數量 <input id="count" type="range" min="1" max="512" value="64"><output id="n">64</output></label><label>速度 <select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select></label><label><input id="circles" type="checkbox" checked style="width:auto">顯示圓</label><button id="music" aria-pressed="true">♫ 音樂：開</button><label>音量 <input id="volume" type="range" min="0" max="100" value="75"></label></nav><div class="music-controls"><button id="listen">▶ 試聽配樂</button><label class="upload">換自己的歌曲 <input id="audioFile" type="file" accept="audio/*"></label><button id="defaultMusic">恢復預設配樂</button></div><p style="text-align:center" id="audioNote">配樂：海岸漫步 · 鋼琴、和弦、貝斯與輕鼓點；可獨立試聽。</p><footer>本島輪廓 · <a href="https://www.naturalearthdata.com/">Natural Earth</a> 1:10m 概化海岸線<br>縣市界線 · <a href="https://data.gov.tw/dataset/7442">內政部國土測繪中心</a> COUNTY_MOI_1090820（2020-08-20），政府資料開放授權條款第 1 版；經簡化為動畫外輪廓。<br>誤差為重建點相對原取樣點的均方根距離 ÷ 所選輪廓南北高度，非測繪精度。</footer></main>
-<script type="module" src="/src/main.js"></script></body></html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="傅立葉畫台灣 / Fourier Draws Taiwan：用旋轉圓描繪台灣與22縣市輪廓。">
+  <title>傅立葉畫台灣 · Fourier Draws Taiwan</title>
+</head>
+<body>
+<main>
+  <header>
+    <h1>傅立葉畫台灣 <span lang="en">Fourier Draws Taiwan</span></h1>
+    <p class="intro">傅立葉級數將輪廓拆成不同頻率的旋轉圓，再相加畫出地圖。<span lang="en">Fourier series combine rotating circles of different frequencies to trace a map.</span></p>
+    <div class="region-picker">
+      <label for="region">輪廓 <span class="en-label" lang="en">Outline</span></label>
+      <select id="region"><option value="taiwan">台灣本島</option></select>
+      <span class="stage">N = <span id="stageCount">64</span></span>
+    </div>
+  </header>
+  <canvas aria-label="旋轉圓描繪台灣本島海岸線的動畫" role="img"></canvas>
+  <section class="readout" aria-label="重建誤差">
+    <span id="regionTitle">台灣本島</span><span>RMS 誤差 <strong id="error">—</strong></span>
+  </section>
+  <p id="status" role="status">手動模式 · 64 個圓</p>
+  <progress id="tourProgress" max="10" value="0" aria-label="自動示範進度"></progress>
+  <nav aria-label="播放控制" class="playback">
+    <button id="auto">▶ 自動示範</button>
+    <button id="play" aria-pressed="false">暫停</button>
+    <label>速度 <select id="speed"><option value="0.5">0.5×</option><option value="1">1×</option><option value="2" selected>2×</option><option value="4">4×</option><option value="8">8×</option><option value="16">16×</option></select></label>
+    <button id="settingsOpen" aria-haspopup="dialog">⚙ 設定</button>
+  </nav>
+  <details class="about">
+    <summary>原理與圖資 <span lang="en">How it works &amp; map data</span></summary>
+    <div class="formula">z(t) = ∑ cₙ eⁱⁿᵗ</div>
+    <p>每個 cₙ 決定一個旋轉向量的半徑與初始角度，n 決定旋轉頻率。向量相加後，末端就會描出輪廓；保留越多項，越能呈現細節。</p>
+    <p lang="en">Each coefficient cₙ sets a rotating vector’s radius and starting angle; n sets its frequency. Adding these vectors traces the outline. More terms capture finer detail.</p>
+    <p id="regionNote"></p>
+    <footer>本島輪廓 · <a href="https://www.naturalearthdata.com/">Natural Earth</a> 1:10m 概化海岸線<br>縣市界線 · <a href="https://data.gov.tw/dataset/7442">內政部國土測繪中心</a> COUNTY_MOI_1090820（2020-08-20），政府資料開放授權條款第 1 版；經簡化為動畫外輪廓。<br>誤差為重建點相對原取樣點的均方根距離 ÷ 所選輪廓南北高度，非測繪精度。</footer>
+  </details>
+</main>
+<dialog id="settings" aria-labelledby="settingsTitle">
+  <div class="dialog-heading"><h2 id="settingsTitle">動畫設定 <span lang="en">Settings</span></h2><button id="settingsClose" aria-label="關閉設定 / Close settings" autofocus>✕</button></div>
+  <p class="hint">調整立即生效。<span lang="en">Changes apply immediately.</span></p>
+  <label class="count-control" for="count">圓的數量 <span lang="en">Circles</span><output id="n" for="count">64</output></label>
+  <input id="count" type="range" min="1" max="512" value="64">
+  <div class="steps" id="steps" aria-label="快速選擇圓的數量"></div>
+  <div class="setting-row"><label><input id="circles" type="checkbox" checked>顯示旋轉圓 <span lang="en">Show circles</span></label></div>
+  <div class="setting-row"><span>背景音樂 <span lang="en">Music</span></span><button id="music" aria-pressed="true">♫ 音樂：開</button></div>
+  <div class="dialog-actions"><button id="restart">重新描繪</button><button id="settingsDone">完成 / Done</button></div>
+</dialog>
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

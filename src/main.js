@@ -15,9 +15,7 @@ models.set(region.id,model);
 const renderer=createRenderer(document.querySelector('canvas'));
 const music=new MusicPlayer(updateMusicUI);
 function updateMusicUI(){
- el('music').textContent=music.enabled?'♫ 音樂：開':'♫ 音樂：關';el('music').setAttribute('aria-pressed',String(music.enabled));
- el('listen').textContent=music.preview?'■ 停止試聽':'▶ 試聽配樂';
- el('audioNote').textContent=music.error||`配樂：${music.name} · 可獨立試聽，也可載入自己的音檔（僅在本機播放）。`;
+ el('music').textContent=music.enabled?'♫ 音樂：開':'♫ 音樂：關';el('music').setAttribute('aria-pressed',String(music.enabled));el('music').title=music.error;
 }
 function syncMusic(unlock=false){void music.sync(player.playing,document.hidden,unlock);}
 function rebuild(){drawing=reconstruct(model,player.count);el('error').textContent=drawing.error.toFixed(3)+'%';}
@@ -37,13 +35,14 @@ for(const n of stages){const button=document.createElement('button');button.text
 el('count').addEventListener('input',()=>selectCount(+el('count').value));
 el('speed').onchange=()=>{player.speed=+el('speed').value;};
 el('auto').onclick=()=>{if(player.touring)player.stopTour();else player.startTour();rebuild();updateUI();syncMusic(true);};
-el('play').onclick=()=>{player.toggle();music.preview=false;updateMusicUI();updateUI();syncMusic(true);};
-el('restart').onclick=()=>{player.restart();updateUI();syncMusic(true);};
+el('play').onclick=()=>{player.toggle();updateMusicUI();updateUI();syncMusic(true);};
+el('restart').onclick=()=>{player.restart();updateUI();syncMusic(true);el('settings').close();};
 el('music').onclick=()=>{music.enabled=!music.enabled;updateMusicUI();syncMusic(true);};
-el('volume').oninput=()=>music.setVolume(+el('volume').value);
-el('listen').onclick=()=>{music.preview=!music.preview;if(music.preview)music.enabled=true;else if(player.playing)music.enabled=false;updateMusicUI();syncMusic(true);};
-el('audioFile').onchange=()=>{const file=el('audioFile').files[0];if(file){music.setTrack(file);music.preview=true;updateMusicUI();syncMusic(true);}};
-el('defaultMusic').onclick=()=>{music.setTrack(null);el('audioFile').value='';music.preview=true;updateMusicUI();syncMusic(true);};
+const settings=el('settings');
+el('settingsOpen').onclick=()=>settings.showModal();
+el('settingsClose').onclick=()=>settings.close();
+el('settingsDone').onclick=()=>settings.close();
+settings.addEventListener('click',event=>{if(event.target===settings){const rect=settings.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)settings.close();}});
 el('region').onchange=()=>{
  region=regions.get(el('region').value)||regions.get('taiwan');
  if(!models.has(region.id))models.set(region.id,analyzeOutline(region.points));
