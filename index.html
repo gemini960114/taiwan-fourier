@@ -10,11 +10,15 @@
 <main>
   <header>
     <h1>傅立葉畫台灣 <span lang="en">Fourier Draws Taiwan</span></h1>
-    <p class="intro" lang="en">Fourier series combine rotating circles of different frequencies to trace a map.</p>
     <div class="region-picker">
       <label for="region">輪廓 <span class="en-label" lang="en">Outline</span></label>
       <select id="region"><option value="taiwan">台灣本島</option></select>
-      <span class="stage">N = <span id="stageCount">64</span></span>
+      <span class="stage">N = <span id="stageCount">1</span></span>
+    </div>
+    <div class="main-count">
+  <label class="count-control" for="count">圓數 N <span lang="en">Circles</span><output id="n" for="count">1</output></label>
+  <input id="count" type="range" min="1" max="512" value="1">
+  <div class="steps" id="steps" aria-label="快速選擇圓的數量"></div>
     </div>
   </header>
   <canvas aria-label="旋轉圓描繪台灣本島海岸線的動畫" role="img"></canvas>
@@ -24,12 +28,12 @@
   <section class="formula-card" aria-label="傅立葉級數 / Fourier series">
     <div class="formula-label">傅立葉級數 <span lang="en">Fourier series</span></div>
     <div class="equation" role="math" aria-label="z N of t equals c zero plus the sum over n in S N of c n times e to the power i two pi n t">
-      <span><i>z</i><sub id="formulaCount">64</sub>(<i>t</i>) = <i>c</i><sub>0</sub> +</span>
-      <span class="sum"><span>∑</span><small><i>n</i> ∈ <i>S</i><sub id="formulaSetCount">64</sub></small></span>
+      <span><i>z</i><sub id="formulaCount">1</sub>(<i>t</i>) = <i>c</i><sub>0</sub> +</span>
+      <span class="sum"><span>∑</span><small><i>n</i> ∈ <i>S</i><sub id="formulaSetCount">1</sub></small></span>
       <span><i>c</i><sub>n</sub><i>e</i><sup><i>i</i>2π<i>nt</i></sup></span>
     </div>
   </section>
-  <p id="status" role="status">手動模式 · 64 個圓</p>
+  <p id="status" role="status">手動模式 · 1 個圓</p>
   <progress id="tourProgress" max="10" value="0" aria-label="自動示範進度"></progress>
   <nav aria-label="播放控制" class="playback">
     <button id="auto">▶ 自動示範</button>
@@ -49,9 +53,6 @@
 <dialog id="settings" aria-labelledby="settingsTitle">
   <div class="dialog-heading"><h2 id="settingsTitle">動畫設定 <span lang="en">Settings</span></h2><button id="settingsClose" aria-label="關閉設定 / Close settings" autofocus>✕</button></div>
   <p class="hint">調整立即生效。<span lang="en">Changes apply immediately.</span></p>
-  <label class="count-control" for="count">圓的數量 <span lang="en">Circles</span><output id="n" for="count">64</output></label>
-  <input id="count" type="range" min="1" max="512" value="64">
-  <div class="steps" id="steps" aria-label="快速選擇圓的數量"></div>
   <div class="setting-row"><label><input id="circles" type="checkbox" checked>顯示旋轉圓 <span lang="en">Show circles</span></label></div>
   <div class="setting-row"><label for="theme">配色 <span lang="en">Theme</span></label><select id="theme"><option value="warm">暖色便利貼</option><option value="dark">深色夜間</option></select></div>
   <div class="dialog-actions"><button id="restart">重新描繪</button><button id="settingsDone">完成 / Done</button></div>

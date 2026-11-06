@@ -26,7 +26,7 @@ function updateUI(){
  document.querySelectorAll('#steps button').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.count===player.count)));
  el('tourProgress').value=player.completed?10:player.touring?player.stageIndex+Math.min(player.progress,1):0;
 }
-function selectCount(n){player.manual(n);rebuild();updateUI();}
+function selectCount(n){player.manual(n);if(!player.playing)player.progress=1;rebuild();updateUI();}
 for(const n of stages){const button=document.createElement('button');button.textContent=n;button.dataset.count=n;button.onclick=()=>{selectCount(n);};el('steps').append(button);}
 el('count').addEventListener('input',()=>selectCount(+el('count').value));
 el('speed').onchange=()=>{player.speed=+el('speed').value;};
